@@ -1,0 +1,34 @@
+version: '2'
+services:
+  app:
+    image: openjdk:8-jdk-alpine
+    ports:
+    - "8080:8080"
+    volumes:
+    - .:/app
+    working_dir: /app
+    command: ./mvnw spring-boot:run
+
+  database:
+    image: mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./docker/database/init:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_DATABASE: hoge
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: hoge
+      MYSQL_PASSWORD: password
+
+  unit-testing:
+    image: openjdk:8-jdk-alpine
+    volumes:
+    - .:/unit-testing
+    working_dir: /unit-testing
+    command: ./mvnw test
+
+#  jenkins:
+#    image: jenkinsci:jenkins
+#    ports:
+#      - "8081:8080"
